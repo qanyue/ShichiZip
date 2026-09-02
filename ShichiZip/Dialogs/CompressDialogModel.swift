@@ -323,6 +323,7 @@ extension CompressDialogController {
         }
 
         private static let formatKey = "FileManager.CompressFormat"
+        private static let methodKey = "FileManager.CompressMethod"
         private static let updateModeKey = "FileManager.CompressUpdateMode"
         private static let pathModeKey = "FileManager.CompressPathMode"
         private static let openSharedKey = "FileManager.CompressOpenSharedFiles"
@@ -350,6 +351,17 @@ extension CompressDialogController {
                            allowedValues: [String]) -> String
         {
             guard let value = defaults.string(forKey: formatKey),
+                  allowedValues.contains(value)
+            else {
+                return defaultValue
+            }
+            return value
+        }
+
+        static func method(defaultValue: String,
+                           allowedValues: [String]) -> String
+        {
+            guard let value = defaults.string(forKey: methodKey),
                   allowedValues.contains(value)
             else {
                 return defaultValue
@@ -509,6 +521,7 @@ extension CompressDialogController {
         }
 
         static func record(format: String,
+                           method: String,
                            updateMode: SZCompressionUpdateMode,
                            pathMode: SZCompressionPathMode,
                            openSharedFiles: Bool,
@@ -518,6 +531,7 @@ extension CompressDialogController {
                            memoryUsage: String)
         {
             defaults.set(format, forKey: formatKey)
+            defaults.set(method, forKey: methodKey)
             defaults.set(updateMode.rawValue, forKey: updateModeKey)
             defaults.set(pathMode.rawValue, forKey: pathModeKey)
             defaults.set(openSharedFiles, forKey: openSharedKey)

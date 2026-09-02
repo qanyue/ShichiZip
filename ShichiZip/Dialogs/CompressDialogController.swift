@@ -202,6 +202,7 @@ final class CompressDialogController: NSObject, NSTextFieldDelegate, NSComboBoxD
                     let result = try resultBuilder.build(from: state)
                     ArchivePathHistory.record(result.archiveURL.path)
                     DialogPreferences.record(format: state.formatName,
+                                             method: state.method?.methodName ?? "",
                                              updateMode: state.updateMode,
                                              pathMode: state.pathMode,
                                              openSharedFiles: state.openSharedFiles,
@@ -469,7 +470,10 @@ final class CompressDialogController: NSObject, NSTextFieldDelegate, NSComboBoxD
         let selectedFormatName = DialogPreferences.format(defaultValue: availableFormats[0].codecName,
                                                           allowedValues: allowedFormats)
         let format = formatOption(named: selectedFormatName) ?? availableFormats[0]
-        let selectedMethodName = defaultMethodName(for: selectedFormatName)
+        let selectedMethodName = DialogPreferences.method(
+            defaultValue: defaultMethodName(for: selectedFormatName),
+            allowedValues: format.methods.map(\.methodName),
+        )
         let method = format.methods.first { $0.methodName == selectedMethodName }
         let advancedOptions = DialogPreferences.advancedOptions(
             defaults: defaultAdvancedOptionsState(for: format,
